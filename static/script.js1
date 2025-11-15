@@ -1,0 +1,138 @@
+const words = [
+    "apple", "water", "house", "school", "happy", "table",
+    "friend", "music", "family", "smile", "game", "love",
+    "bread", "light", "phone", "flower", "sunny", "green"
+];
+
+let shuffledWords = [];
+let currentWord = "";
+let scrambled = "";
+let score = 0;
+let mistakes = 0;
+let wordIndex = 0;
+let answered = false;
+let gameOver = false;
+
+const scrambledWordElement = document.getElementById("scrambled-word");
+const guessInput = document.getElementById("guess");
+const checkBtn = document.getElementById("check-btn");
+const nextBtn = document.getElementById("next-btn");
+const feedbackElement = document.getElementById("feedback");
+const scoreElement = document.getElementById("score");
+
+// Mensaje final
+const finalMessage = document.createElement("p");
+finalMessage.id = "final-message";
+finalMessage.style.fontWeight = "bold";
+finalMessage.style.fontSize = "1.2rem";
+document.querySelector(".game-container").appendChild(finalMessage);
+
+// Botón para reiniciar
+// Botón para reiniciar
+const restartBtn = document.createElement("button");
+restartBtn.textContent = "Play Again";
+restartBtn.style.display = "none";
+restartBtn.style.backgroundColor = "#B57EDC"; // Morado claro
+restartBtn.style.color = "white";
+restartBtn.style.border = "none";
+restartBtn.style.borderRadius = "6px";
+restartBtn.style.padding = "10px 15px";
+restartBtn.style.marginTop = "10px";
+restartBtn.style.cursor = "pointer";
+restartBtn.style.fontSize = "1rem";
+restartBtn.style.transition = "background 0.3s";
+
+// Hover para hacerlo más bonito
+restartBtn.addEventListener("mouseover", () => {
+    restartBtn.style.backgroundColor = "#A56ED2"; // Morado un poco más oscuro
+});
+restartBtn.addEventListener("mouseout", () => {
+    restartBtn.style.backgroundColor = "#B57EDC";
+});
+
+document.querySelector(".game-container").appendChild(restartBtn);
+
+
+function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+function scrambleWord(word) {
+    return word.split("")
+               .sort(() => Math.random() - 0.5)
+               .join("");
+}
+
+function newWord() {
+    if (shuffledWords.length === 0 || wordIndex >= shuffledWords.length) {
+        shuffledWords = shuffleArray([...words]);
+        wordIndex = 0;
+    }
+
+    currentWord = shuffledWords[wordIndex];
+    scrambled = scrambleWord(currentWord);
+    scrambledWordElement.textContent = scrambled;
+    guessInput.value = "";
+    feedbackElement.textContent = "";
+    answered = false;
+    wordIndex++;
+}
+
+function checkGameStatus() {
+    if (score >= 10) {
+        endGame("🏆 You win!", "#FFD700"); // Dorado
+    } else if (mistakes > 10) {
+        endGame("💩 You lose!", "#CD7F32"); // Bronce
+    }
+}
+
+function endGame(message, color) {
+    finalMessage.textContent = message;
+    finalMessage.style.color = color;
+    gameOver = true;
+    checkBtn.disabled = true;
+    nextBtn.disabled = true;
+    guessInput.disabled = true;
+    restartBtn.style.display = "inline-block";
+}
+
+function restartGame() {
+    score = 0;
+    mistakes = 0;
+    wordIndex = 0;
+    answered = false;
+    gameOver = false;
+    scoreElement.textContent = score;
+    finalMessage.textContent = "";
+    checkBtn.disabled = false;
+    nextBtn.disabled = false;
+    guessInput.disabled = false;
+    restartBtn.style.display = "none";
+    newWord();
+}
+
+checkBtn.addEventListener("click", () => {
+    if (answered || gameOver) return;
+
+    const guess = guessInput.value.trim().toLowerCase();
+    if (guess === currentWord) {
+        feedbackElement.textContent = "✅ Correct!";
+        feedbackElement.style.color = "green";
+        score++;
+        scoreElement.textContent = score;
+        answered = true;
+    } else {
+        feedbackElement.textContent = "❌ Try again!";
+        feedbackElement.style.color = "red";
+        mistakes++;
+    }
+    checkGameStatus();
+});
+
+nextBtn.addEventListener("click", () => {
+    if (!gameOver) newWord();
+});
+
+restartBtn.addEventListener("click", restartGame);
+
+newWord();
