@@ -228,10 +228,10 @@ function showGif(type) {
     let gifList, folder;
     if (type === "correct") {
         gifList = gifsCorrect;
-        folder = "/carpeta de gifs/bien/";
+        folder = "./carpeta de gifs/bien/";
     } else {
         gifList = gifsWrong;
-        folder = "/carpeta de gifs/mal/";
+        folder = "./carpeta de gifs/mal/";
     }
 
     const randomGif = gifList[Math.floor(Math.random() * gifList.length)];
