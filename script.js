@@ -1,6 +1,7 @@
 const words = [
-    "i always arrive on time", "she needs to study more", "the weather is very cold today", "they are playing football now", "we should finish the project", "he forgot his phone at home",
-    "please open the window, it’s hot", "i want to travel next summer", "the children like to play outside", "she is feeling very happy today"
+    "apple", "water", "house", "school", "happy", "table",
+    "friend", "music", "family", "smile", "game", "love",
+    "bread", "light", "phone", "flower", "sunny", "green"
 ];
 
 let shuffledWords = [];
@@ -19,14 +20,12 @@ const nextBtn = document.getElementById("next-btn");
 const feedbackElement = document.getElementById("feedback");
 const scoreElement = document.getElementById("score");
 
-// Normalizar texto para frases (mantiene espacios)
+// Normalizar texto (quita acentos, signos, puntos, etc.)
 const normalize = (s) =>
     s.toLowerCase()
-     .normalize('NFD').replace(/\p{M}/gu, '')   // quita acentos
-     .replace(/[.,!?;:’'"“”]/g, '')             // quita puntuación común
-     .replace(/\s+/g, ' ')                      // colapsa espacios múltiples a uno
+     .normalize('NFD').replace(/\p{M}/gu, '')    // quita acentos
+     .replace(/[^\p{L}\d]+/gu, '')               // quita puntuación y espacios extra
      .trim();
-
 
 // Verificar si el navegador soporta SpeechRecognition
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -113,7 +112,7 @@ document.querySelector(".game-container").appendChild(finalMessage);
 const restartBtn = document.createElement("button");
 restartBtn.textContent = "Play Again";
 restartBtn.style.display = "none";
-restartBtn.style.backgroundColor = "#B57EDC"; 
+restartBtn.style.backgroundColor = "#0077cc"; 
 restartBtn.style.color = "white";
 restartBtn.style.border = "none";
 restartBtn.style.borderRadius = "6px";
@@ -122,6 +121,7 @@ restartBtn.style.marginTop = "10px";
 restartBtn.style.cursor = "pointer";
 restartBtn.style.fontSize = "1rem";
 restartBtn.style.transition = "background 0.3s";
+restartBtn.style.transform = "scale(1)";
 restartBtn.addEventListener("mouseover", () => {
     restartBtn.style.backgroundColor = "#005fa3";
     restartBtn.style.transform = "scale(1.1)";
@@ -148,7 +148,7 @@ function fisherYatesShuffle(array) {
 function scrambleWord(word) {
     let scrambled;
     do {
-        scrambled = fisherYatesShuffle(word.split(" ")).join(" ");
+        scrambled = fisherYatesShuffle(word.split("")).join("");
     } while (scrambled === word);
     return scrambled;
 }
@@ -169,9 +169,9 @@ function newWord() {
 }
 
 function checkGameStatus() {
-    if (score >= 5) {
+    if (score >= 10) {
         endGame("🏆 You win!", "#FFD700");
-    } else if (mistakes >= 5) { // 🔹 Ahora es simétrico
+    } else if (mistakes >= 3) {
         endGame("💩 You lose!", "#CD7F32");
     }
 }
@@ -187,8 +187,8 @@ function endGame(message, color) {
 
     if (message.includes("win")) {
         const link = document.createElement("a");
-        link.href = "index.html";
-        link.textContent = "Congratulations! ¿Do you want to play again? 🔁";
+        link.href = "index2.html";
+        link.textContent = "Let's go to the level 2 🚀";
         link.target = "_self";
         link.style.display = "block";
         link.style.marginTop = "10px";
@@ -197,7 +197,6 @@ function endGame(message, color) {
         link.style.textDecoration = "none";
         link.style.fontSize = "1.1rem";
 
-        // Evitar duplicados si ya existe
         if (!document.getElementById("next-level-link")) {
             link.id = "next-level-link";
             document.querySelector(".game-container").appendChild(link);
@@ -228,13 +227,12 @@ function showGif(type) {
     let gifList, folder;
     if (type === "correct") {
         gifList = gifsCorrect;
-        folder = "../static/carpeta de gifs/bien/";
+        folder = "/carpeta de gifs/bien/";
     } else {
         gifList = gifsWrong;
-        folder = "../static/carpeta de gifs/mal/";
+        folder = "/carpeta de gifs/mal/";
     }
 
-    // Elegir gif aleatorio
     const randomGif = gifList[Math.floor(Math.random() * gifList.length)];
     gif.src = folder + randomGif;
 
@@ -247,25 +245,24 @@ function showGif(type) {
     }, 5000);
 }
 
-
-
+// ✅ Usar normalize también en el botón Check
 checkBtn.addEventListener("click", () => {
     if (answered || gameOver) return; 
 
-    const guess = guessInput.value.trim().toLowerCase();
+    const guess = normalize(guessInput.value);
 
-    if (guess === currentWord) {
+    if (guess === normalize(currentWord)) {
         feedbackElement.textContent = "✅ Correct!";
         feedbackElement.style.color = "green";
         score++;
         scoreElement.textContent = score;
-        showGif("correct"); // 🎉 GIF acierto
+        showGif("correct");
     } else {
         feedbackElement.textContent = "❌ move on to the next word!";
         feedbackElement.style.color = "red";
         mistakes++;
         mistakesElement.textContent = `Mistakes: ${mistakes}`;
-        showGif("wrong"); // ❌ GIF error
+        showGif("wrong");
     }
 
     answered = true;
