@@ -1,0 +1,116 @@
+body {
+    font-family: Arial, sans-serif;
+    /*background-color: #fbc2eb;*/
+    background: linear-gradient(-45deg, #89f7fe, #66a6ff, #fbc2eb, #a6ffcb);*/
+    background-size: 400% 400%;
+    /*animation: gradientBG 15s ease infinite;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.game-container {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+    max-width: 410px;
+    width: 100%;
+    transition: transform 0.3s;
+}
+
+h1 {
+    color: #333;
+}
+
+.instruction {
+    font-size: 1rem;
+    color: #666;
+}
+
+.scrambled-word {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 20px 0;
+    letter-spacing: 3px;
+    color: #0077cc;
+}
+
+input {
+    padding: 10px;
+    width: 90%;
+    margin: 10px 0;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 6px;
+    background: #0077cc;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #005fa3;
+    transform: scale(1.1);
+    transition: 0.3s;
+}
+
+#feedback {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.score {
+    margin-top: 15px;
+    font-size: 1rem;
+    color: #333;
+}
+
+#mic-btn {
+    padding: 0;
+}
+
+.bi {
+    font-size: 1.2rem; 
+    background: #0077cc;
+    border-radius: 6px;
+    padding: 8px 8px;
+    border: none; 
+    cursor: pointer;
+}
+
+.bi:hover {
+    background: #005fa3;
+}
+
+#gif-container {
+    opacity: 0;
+    max-height: 0;               /* colapsa altura */
+    overflow: hidden;            /* evita que el gif se vea fuera del contenedor */
+    transition: opacity 0.8s ease-in-out, max-height 0.8s ease-in-out;
+    text-align: center;
+    margin-top: 15px;
+}
+
+#gif-container.show {
+    opacity: 1;
+    max-height: 250px;           /* lo suficiente para mostrar el gif */
+}
+
